@@ -2,6 +2,8 @@ import express from "express"
 import cors from "cors"
 import mysql, { Pool } from "mysql2/promise"
 import dotenv from "dotenv"
+import getRandomSentenceRoute from "./typing/sentence"
+import { errorHandlerMiddleware } from "./middlewares/errorHandlerMiddleware"
 
 dotenv.config()
 
@@ -10,34 +12,36 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-const startServer = () => {
-  app.listen(process.env.PORT || 8001, () => {
-    console.log(`Server is running on port ${process.env.PORT || 8001}`)
-  })
-}
+export let pool: Pool
 
-export let pool: Pool | null = null
-
-async function connectToDatabase() {
+const initApp = async () => {
   try {
     pool = mysql.createPool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
+      waitForConnections: true,
       connectionLimit: 50,
+      queueLimit: 0,
     })
 
     const connection = await pool.getConnection()
-    console.log("Connected to MySQL database")
+    console.log("Database pool initialized successfully.")
     connection.release()
+
+    app.use("/api/typing/sentence", getRandomSentenceRoute)
+    app.use(errorHandlerMiddleware)
+
+    app.listen(process.env.PORT || 8001, () => {
+      console.log(`Server is running on port ${process.env.PORT || 8001}.`)
+    })
   } catch (error) {
-    console.error("Failed to connect to MySQL. Retrying in 5 seconds...", error)
-    setTimeout(connectToDatabase, 5000)
+    console.error("Failed to initialize database pool:", error)
+    process.exit(1)
   }
 }
 
-startServer()
-connectToDatabase()
+initApp()
 
 export default app
