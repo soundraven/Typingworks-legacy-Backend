@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express"
-import { getRandomTypeSentence } from "../service/typingService"
 import { CustomError } from "../structure/errorStructure"
+import { pool } from "../index"
 
 const router = express.Router()
 
@@ -11,25 +11,52 @@ router.get(
     res: Response,
     next: NextFunction
   ): Promise<Response | void> => {
-    const oneCycle = parseInt(req.query.oneCycle as string, 10)
+    const { oneCycle, language, type } = req.query
+    const oneCycleNum = Number(oneCycle)
 
-    if (isNaN(oneCycle) || oneCycle <= 0) {
-      const error: CustomError = new Error(
-        "Invalid 'oneCycle' parameter. It must be a positive number."
-      )
-      error.status = 400
+    if (isNaN(oneCycleNum) || oneCycleNum <= 0) {
+      const error: CustomError = {
+        name: "InvalidParameterError",
+        message: "Invalid 'oneCycle' parameter. It must be a positive number.",
+        status: 400,
+      }
       return next(error)
     }
 
+    let params: any[] = []
+
+    let getSentenceQuery = `
+    SELECT
+      *
+    FROM
+      sentence
+    WHERE
+      active = 'Y'
+      ${language ? `AND language = ?` : `AND language = 'kr'`}
+      ${type ? `AND type = ?` : ""}
+    ORDER BY
+      RAND()
+    LIMIT ?`
+
+    if (language) params.push(language)
+    if (type) params.push(type)
+    if (oneCycleNum) params.push(oneCycleNum)
+
     try {
-      const sentences = await getRandomTypeSentence(oneCycle)
+      const [sentences] = await pool.query(getSentenceQuery, [...params])
+
       return res.status(200).json({
         success: true,
         message: "Successfully retrieved sentences.",
         data: sentences,
       })
     } catch (error) {
-      return next(error)
+      const customError: CustomError = {
+        name: "SentenceRetrievalError",
+        message: "Failed to retrieve sentences.",
+        status: 500,
+      }
+      return next(customError)
     }
   }
 )

@@ -1,15 +1,31 @@
 import { pool } from "../index"
 
-export const getRandomTypeSentence = async (oneCycle: number) => {
-  if (!pool) throw new Error("Database pool not available")
-
+export const getSentence = async (
+  oneCycle: number,
+  language: string,
+  type: string
+) => {
   const connection = await pool.getConnection()
+
+  let getSentenceQuery = `
+    SELECT
+      *
+    FROM
+      sentence
+    WHERE
+      active = 1
+      ${type ? `AND type = ${type}` : ""}
+      ${language ? `AND language = ${language}` : `AND language = 'kr'`}
+    ORDER BY
+      RAND()
+    LIMIT ${oneCycle}`
+
   try {
-    const [rows] = await connection.query(
-      `SELECT * FROM sentence ORDER BY RAND() LIMIT ${oneCycle}`
-    )
-    return rows
+    const [result] = await connection.query(getSentenceQuery)
+    return result
   } finally {
     connection.release()
   }
 }
+
+export const getLanguage = async () => {}
