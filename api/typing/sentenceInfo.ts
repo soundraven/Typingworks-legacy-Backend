@@ -5,11 +5,15 @@ const router = express.Router()
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const [result] = await pool.query(`SELECT * FROM type`)
+    const [languageInfo, typeInfo] = await Promise.all([
+      pool.query(`SELECT * FROM language`),
+      pool.query(`SELECT * FROM type`),
+    ])
+
     return res.status(200).json({
       success: true,
-      message: "Successfully got types.",
-      data: result,
+      message: "Successfully got languages.",
+      data: { languageInfo: languageInfo[0], typeInfo: typeInfo[0] },
     })
   } catch (error) {
     next(error)

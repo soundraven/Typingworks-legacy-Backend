@@ -14,6 +14,8 @@ router.get(
     const { oneCycle, language, type } = req.query
     const oneCycleNum = Number(oneCycle)
 
+    console.log(oneCycleNum)
+
     if (isNaN(oneCycleNum) || oneCycleNum <= 0) {
       const error: CustomError = {
         name: "InvalidParameterError",

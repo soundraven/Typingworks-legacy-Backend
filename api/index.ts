@@ -3,7 +3,7 @@ import cors from "cors"
 import mysql, { Pool } from "mysql2/promise"
 import dotenv from "dotenv"
 import getRandomSentenceRoute from "./typing/sentence"
-import getLanguageRoute from "./typing/language"
+import getSentenceInfoRoute from "./typing/sentenceInfo"
 import { errorHandlerMiddleware } from "./middlewares/errorHandlerMiddleware"
 
 dotenv.config()
@@ -32,7 +32,7 @@ const initApp = async () => {
     connection.release()
 
     app.use("/api/typing/sentence", getRandomSentenceRoute)
-    app.use("/api/typing/language", getLanguageRoute)
+    app.use("/api/typing/sentenceInfo", getSentenceInfoRoute)
     app.use(errorHandlerMiddleware)
 
     app.listen(process.env.PORT || 8001, () => {
