@@ -31,9 +31,9 @@ const initApp = async () => {
     console.log("Database pool initialized successfully.")
     connection.release()
 
-    // app.use("/api/typing/sentence", getRandomSentenceRoute)
+    app.use("/api/typing/sentence", getRandomSentenceRoute)
     app.use("/api/typing/sentenceInfo", getSentenceInfoRoute)
-    // app.use(errorHandlerMiddleware)
+    app.use(errorHandlerMiddleware)
 
     app.listen(process.env.PORT || 8001, () => {
       console.log(`Server is running on port ${process.env.PORT || 8001}.`)
