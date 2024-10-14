@@ -13,6 +13,7 @@ router.get(
   ): Promise<Response | void> => {
     const { oneCycle, language, type } = req.query
     const oneCycleNum = Number(oneCycle)
+    console.log("789789789")
 
     if (isNaN(oneCycleNum) || oneCycleNum <= 0) {
       const error: CustomError = {
