@@ -1,65 +1,29 @@
 import express, { Request, Response, NextFunction } from "express"
-import { CustomError } from "../structure/errorStructure"
 import { pool } from "../index"
+import { CustomError } from "../structure/errorStructure"
 
 const router = express.Router()
 
-router.get(
-  "/",
-  async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<Response | void> => {
-    const { oneCycle, language, type } = req.query
-    const oneCycleNum = Number(oneCycle)
-    console.log("789789789")
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const [languageInfo, typeInfo] = await Promise.all([
+      pool.query(`SELECT * FROM language`),
+      pool.query(`SELECT * FROM type`),
+    ])
 
-    if (isNaN(oneCycleNum) || oneCycleNum <= 0) {
-      const error: CustomError = {
-        name: "InvalidParameterError",
-        message: "Invalid 'oneCycle' parameter. It must be a positive number.",
-        status: 400,
-      }
-      return next(error)
+    return res.status(200).json({
+      success: true,
+      message: "Successfully got languages.",
+      data: { languageInfo: languageInfo[0], typeInfo: typeInfo[0] },
+    })
+  } catch (error) {
+    const customError: CustomError = {
+      name: "SentenceRetrievalError",
+      message: "Failed to retrieve sentences.",
+      status: 500,
     }
-
-    let params: any[] = []
-
-    let getSentenceQuery = `
-    SELECT
-      *
-    FROM
-      sentence
-    WHERE
-      active = 'Y'
-      ${language ? `AND language = ?` : `AND language = 'kr'`}
-      ${type ? `AND type = ?` : ""}
-    ORDER BY
-      RAND()
-    LIMIT ?`
-
-    if (language) params.push(language)
-    if (type) params.push(type)
-    if (oneCycleNum) params.push(oneCycleNum)
-
-    try {
-      const [sentences] = await pool.query(getSentenceQuery, [...params])
-
-      return res.status(200).json({
-        success: true,
-        message: "Successfully retrieved sentences.",
-        data: sentences,
-      })
-    } catch (error) {
-      const customError: CustomError = {
-        name: "SentenceRetrievalError",
-        message: "Failed to retrieve sentences.",
-        status: 500,
-      }
-      return next(customError)
-    }
+    return next(customError)
   }
-)
+})
 
 export default router

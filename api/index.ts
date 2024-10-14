@@ -31,7 +31,7 @@ const initApp = async () => {
     console.log("Database pool initialized successfully.")
     connection.release()
 
-    app.use("/api/typing/sentence", getRandomSentenceRoute)
+    // app.use("/api/typing/sentence", getRandomSentenceRoute)
     app.use("/api/typing/sentenceInfo", getSentenceInfoRoute)
     // app.use(errorHandlerMiddleware)
 
