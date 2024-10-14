@@ -24,6 +24,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   //   }
   //   return next(customError)
   // }
+  console.log("456456456456")
   res.send("123123123")
 })
 
