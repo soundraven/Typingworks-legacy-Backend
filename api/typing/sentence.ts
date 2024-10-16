@@ -13,7 +13,6 @@ router.get(
   ): Promise<Response | void> => {
     const { oneCycle, language, type } = req.query
     const oneCycleNum = Number(oneCycle)
-    console.log("789789789")
 
     if (isNaN(oneCycleNum) || oneCycleNum <= 0) {
       const error: CustomError = {
@@ -47,7 +46,6 @@ router.get(
       const [sentences] = await pool.query(getSentenceQuery, [...params])
 
       return res.status(200).json({
-        success: true,
         message: "Successfully retrieved sentences.",
         data: sentences,
       })
