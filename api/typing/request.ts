@@ -5,7 +5,7 @@ import { RuleForm } from "../../types/typing"
 
 const router = express.Router()
 
-router.get(
+router.post(
   "/",
   async (
     req: Request,
