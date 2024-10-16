@@ -12,6 +12,7 @@ router.get(
     res: Response,
     next: NextFunction
   ): Promise<Response | void> => {
+    console.log("요청 수락")
     const form: RuleForm = req.body.form
     form.language === "Korean" ? (form.language = "kr") : (form.language = "En")
     form.sentenceType === "Quote"

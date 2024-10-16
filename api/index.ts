@@ -4,6 +4,7 @@ import mysql, { Pool } from "mysql2/promise"
 import dotenv from "dotenv"
 import getRandomSentenceRoute from "./typing/sentence"
 import getSentenceInfoRoute from "./typing/sentenceInfo"
+import getRequestRoute from "./typing/request"
 import { errorHandlerMiddleware } from "./middlewares/errorHandlerMiddleware"
 
 dotenv.config()
@@ -33,6 +34,7 @@ const initApp = async () => {
 
     app.use("/api/typing/sentence", getRandomSentenceRoute)
     app.use("/api/typing/sentenceInfo", getSentenceInfoRoute)
+    app.use("/api/typing/request", getRequestRoute)
     app.use(errorHandlerMiddleware)
 
     app.listen(process.env.PORT || 8001, () => {
