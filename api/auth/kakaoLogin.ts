@@ -3,7 +3,7 @@ import { CustomError } from "../structure/errorStructure"
 import axios, { AxiosError } from "axios"
 import { pool } from "../index"
 import dayjs from "dayjs"
-import crypto from "crypto"
+import { ResultSetHeader } from "mysql2"
 
 const router = express.Router()
 
@@ -22,7 +22,6 @@ router.post(
     const { code } = req.body
 
     try {
-      console.log(process.env.KAKAO_REST_API_KEY)
       const tokenResponse = await axios.post(
         "https://kauth.kakao.com/oauth/token",
         null,
@@ -39,8 +38,6 @@ router.post(
         }
       )
 
-      console.log(tokenResponse.data)
-
       const refreshToken = tokenResponse.data.refresh_token
       const accessToken = tokenResponse.data.access_token
 
@@ -54,10 +51,6 @@ router.post(
           }
         )
 
-        const encryptedRefreshToken: string = crypto
-          .createHash("sha256")
-          .update(refreshToken + process.env.REFRESH_TOKEN_SALT)
-          .digest("hex")
         const setRefreshTokenQuery = `INSERT INTO auth (refresh_token, registered_by, expires) VALUES (?, ?, ?)`
         const currentTime = dayjs()
 
@@ -65,25 +58,25 @@ router.post(
           .add(tokenResponse.data.refresh_token_expires_in, "second")
           .format("YYYY-MM-DD HH:mm:ss")
 
-        console.log("유저정보", userInfoResponse.data)
-        console.log(userInfoResponse.data.id)
-        console.log(encryptedRefreshToken)
+        const [result] = await pool.query<ResultSetHeader>(
+          setRefreshTokenQuery,
+          [refreshToken, userInfoResponse.data.id, refreshTokenExpires]
+        )
 
-        const [result] = await pool.query(setRefreshTokenQuery, [
-          encryptedRefreshToken,
-          userInfoResponse.data.id,
-          refreshTokenExpires,
-        ])
-
-        console.log(result)
-
-        return res.status(200).json({
-          message: "Successfully retrieved access token and user info.",
-          data: {
-            accessToken: accessToken,
-            user: userInfoResponse.data,
-          },
-        })
+        if (result.affectedRows === 1) {
+          return res.status(200).json({
+            message: "Successfully retrieved access token and user info.",
+            data: {
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+              user: userInfoResponse.data,
+            },
+          })
+        } else {
+          return res
+            .status(400)
+            .json({ message: "Failed to set refresh token to DB." })
+        }
       } else {
         return res
           .status(400)
