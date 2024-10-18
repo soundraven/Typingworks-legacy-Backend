@@ -35,6 +35,9 @@ router.post(
         }
       )
 
+      console.log(tokenResponse.data)
+
+      const refreshToken = tokenResponse.data.refresh_token
       const accessToken = tokenResponse.data.access_token
 
       if (accessToken) {
@@ -47,10 +50,12 @@ router.post(
           }
         )
 
+        console.log(userInfoResponse.data)
+
         return res.status(200).json({
           message: "Successfully retrieved access token and user info.",
           data: {
-            accessToken,
+            accessToken: accessToken,
             user: userInfoResponse.data,
           },
         })
