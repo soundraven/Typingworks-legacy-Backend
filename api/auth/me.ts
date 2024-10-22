@@ -30,10 +30,15 @@ router.post(
           }
         )
 
+        const user = {
+          id: userInfoResponse.data.id,
+          nickname: userInfoResponse.data.properties.nickname,
+        }
+
         return res.status(200).json({
           message: "Successfully retrieved access token and user info.",
           data: {
-            user: userInfoResponse.data,
+            user: user,
           },
         })
       } else if (refreshToken) {
@@ -63,10 +68,16 @@ router.post(
           }
         )
 
+        const user = {
+          id: userInfoResponse.data.id,
+          nickname: userInfoResponse.data.properties.nickname,
+        }
+
         return res.status(200).json({
           message: "Successfully retrieved new access token and user info.",
           data: {
-            user: userInfoResponse.data,
+            accessToken: newAccessToken,
+            user: user,
           },
         })
       } else {

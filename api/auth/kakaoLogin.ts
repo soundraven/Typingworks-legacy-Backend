@@ -63,6 +63,8 @@ router.post(
           [refreshToken, userInfoResponse.data.id, refreshTokenExpires]
         )
 
+        console.log(result)
+
         if (result.affectedRows === 1) {
           return res.status(200).json({
             message: "Successfully retrieved access token and user info.",
