@@ -17,9 +17,11 @@ router.post(
     const form: RuleForm = req.body.form
     console.log(form)
     form.language === "Korean" ? (form.language = "kr") : (form.language = "En")
-    form.sentenceType === "Quote"
-      ? (form.sentenceType = "quote")
-      : (form.sentenceType = "pangram")
+    if (form.sentenceType !== "") {
+      form.sentenceType === "Quote"
+        ? (form.sentenceType = "quote")
+        : (form.sentenceType = "pangram")
+    }
     console.log(form)
 
     const insertFormQuery = `
@@ -38,7 +40,7 @@ router.post(
     const values = [
       form.name,
       form.language,
-      form.sentenceType,
+      form.sentenceType || null,
       form.otherSentenceType,
       form.comment || null,
       form.source,

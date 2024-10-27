@@ -7,6 +7,8 @@ import getSentenceInfoRoute from "./typing/sentenceInfo"
 import getRequestRoute from "./typing/request"
 import getKakaoLoginRoute from "./auth/kakaoLogin"
 import autoLoginRoute from "./auth/me"
+import getRequestListRoute from "./auth/admin"
+import confirmRequestRoute from "./auth/confirm"
 import { errorHandlerMiddleware } from "./middlewares/errorHandlerMiddleware"
 
 dotenv.config()
@@ -39,6 +41,8 @@ const initApp = async () => {
     app.use("/api/typing/request", getRequestRoute)
     app.use("/api/auth/kakaoLogin", getKakaoLoginRoute)
     app.use("/api/auth/me", autoLoginRoute)
+    app.use("/api/auth/admin", getRequestListRoute)
+    app.use("/api/auth/confirm", confirmRequestRoute)
     app.use(errorHandlerMiddleware)
 
     app.listen(process.env.PORT || 8001, () => {

@@ -37,9 +37,7 @@ router.post(
 
         return res.status(200).json({
           message: "Successfully retrieved access token and user info.",
-          data: {
-            user: user,
-          },
+          data: user,
         })
       } else if (refreshToken) {
         const tokenResponse = await axios.post(
