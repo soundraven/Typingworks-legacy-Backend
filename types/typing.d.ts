@@ -1,5 +1,5 @@
 export interface RuleForm {
-  name: string
+  requester: string
   language: string
   sentenceType: string
   otherSentenceType: boolean

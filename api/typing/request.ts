@@ -13,20 +13,17 @@ router.post(
     res: Response,
     next: NextFunction
   ): Promise<Response | void> => {
-    console.log("요청 수락")
     const form: RuleForm = req.body.form
-    console.log(form)
     form.language === "Korean" ? (form.language = "kr") : (form.language = "En")
     if (form.sentenceType !== "") {
       form.sentenceType === "Quote"
         ? (form.sentenceType = "quote")
         : (form.sentenceType = "pangram")
     }
-    console.log(form)
 
     const insertFormQuery = `
     INSERT INTO request (
-      name,
+      requester,
       language,
       type,
       other_type,
@@ -38,7 +35,7 @@ router.post(
 `
 
     const values = [
-      form.name,
+      form.requester,
       form.language,
       form.sentenceType || null,
       form.otherSentenceType,
