@@ -5,6 +5,7 @@ import dotenv from "dotenv"
 import getRandomSentenceRoute from "./typing/sentence"
 import getSentenceInfoRoute from "./typing/sentenceInfo"
 import getRequestRoute from "./typing/request"
+import insertRecordRoute from "./typing/record"
 import getKakaoLoginRoute from "./auth/kakaoLogin"
 import autoLoginRoute from "./auth/me"
 import getRequestListRoute from "./auth/admin"
@@ -39,6 +40,7 @@ const initApp = async () => {
     app.use("/api/typing/sentence", getRandomSentenceRoute)
     app.use("/api/typing/sentenceInfo", getSentenceInfoRoute)
     app.use("/api/typing/request", getRequestRoute)
+    app.use("/api/typing/record", insertRecordRoute)
     app.use("/api/auth/kakaoLogin", getKakaoLoginRoute)
     app.use("/api/auth/me", autoLoginRoute)
     app.use("/api/auth/admin", getRequestListRoute)
