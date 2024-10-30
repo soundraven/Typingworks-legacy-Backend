@@ -20,4 +20,5 @@ export interface TypingInfo {
   avgProgress: number
   count: number
   entireElapsedTime: number
+  charCount: number
 }

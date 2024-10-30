@@ -26,8 +26,9 @@ router.post(
       avg_accuracy,
       avg_progress,
       count,
-      time
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      time,
+      char_count
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 `
 
     const values = [
@@ -41,6 +42,7 @@ router.post(
       typingInfo.avgProgress,
       typingInfo.count,
       typingInfo.entireElapsedTime,
+      typingInfo.charCount,
     ]
 
     try {
