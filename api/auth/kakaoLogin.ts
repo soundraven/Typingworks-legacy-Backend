@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express"
-import { CustomError } from "../structure/errorStructure"
+import { CustomError } from "../../types/errorStructure"
 import axios, { AxiosError } from "axios"
 import { pool } from "../index"
 import dayjs from "dayjs"
@@ -93,12 +93,7 @@ router.post(
 
       const statusCode = axiosError.response?.status || 500
 
-      const customError: CustomError = {
-        name: "TokenRetrievalError",
-        message: errorMessage,
-        status: statusCode,
-      }
-
+      const customError = new CustomError(errorMessage, statusCode)
       return next(customError)
     }
   }

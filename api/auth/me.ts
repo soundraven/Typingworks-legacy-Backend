@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express"
-import { CustomError } from "../structure/errorStructure"
+import { CustomError } from "../../types/errorStructure"
 import axios, { AxiosError } from "axios"
 
 const router = express.Router()
@@ -37,7 +37,7 @@ router.post(
 
         return res.status(200).json({
           message: "Successfully retrieved access token and user info.",
-          data: user,
+          data: { user: user },
         })
       } else if (refreshToken) {
         const tokenResponse = await axios.post(
@@ -91,12 +91,7 @@ router.post(
         "Failed to retrieve user info."
       const statusCode = axiosError.response?.status || 500
 
-      const customError: CustomError = {
-        name: "TokenRetrievalError",
-        message: errorMessage,
-        status: statusCode,
-      }
-
+      const customError = new CustomError(errorMessage, statusCode)
       return next(customError)
     }
   }

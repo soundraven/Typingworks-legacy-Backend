@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express"
-import { CustomError } from "../structure/errorStructure"
+import { CustomError } from "../../types/errorStructure"
 import { pool } from "../index"
 import { Record } from "../../types/typing"
 import dayjs from "dayjs"
@@ -47,11 +47,7 @@ router.get(
         data: { records: formattedDateRecords },
       })
     } catch (error) {
-      const customError: CustomError = {
-        name: "RecordRetrievalError",
-        message: "Failed to retrieve records.",
-        status: 500,
-      }
+      const customError = new CustomError("Failed to retrieve records.", 500)
       return next(customError)
     }
   }

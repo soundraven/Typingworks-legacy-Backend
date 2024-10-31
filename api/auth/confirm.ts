@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express"
-import { CustomError } from "../structure/errorStructure"
+import { CustomError } from "../../types/errorStructure"
 import { pool } from "../index"
 import { ResultSetHeader } from "mysql2"
 
@@ -46,10 +46,9 @@ router.post(
             throw new Error("Request confirm failed")
           }
         } else if (result.affectedRows === 1) {
-          const success: Boolean = true
           return res.status(200).json({
             message: "Request successfully confirmed.",
-            data: success,
+            data: { success: true },
           })
         } else {
           throw new Error("Request confirm failed")
@@ -58,11 +57,7 @@ router.post(
         throw new Error("Request confirm failed")
       }
     } catch (error) {
-      const customError: CustomError = {
-        name: "FormInsertionError",
-        message: "Failed to insert form data.",
-        status: 500,
-      }
+      const customError = new CustomError("Failed to confirm request.", 500)
       return next(customError)
     }
   }

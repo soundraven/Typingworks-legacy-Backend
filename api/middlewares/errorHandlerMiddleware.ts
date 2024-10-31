@@ -1,21 +1,23 @@
 import { Request, Response, NextFunction } from "express"
-import { CustomError } from "../structure/errorStructure"
+import { CustomError } from "../../types/errorStructure"
 
 export const errorHandlerMiddleware = (
-  err: CustomError,
+  err: Error | CustomError,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   console.error(err.stack)
 
-  const status = err.status || 500
-  const message = err.message || "Internal Server Error"
+  const status = (err as CustomError).status || 500
+  const message = (err as CustomError).message || "Internal Server Error"
 
-  const response = {
+  const response: {
+    status: string
+    message: string
+  } = {
     status: "error",
     message,
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }), // 개발 환경에서만 스택 정보 제공
   }
 
   res.status(status).json(response)

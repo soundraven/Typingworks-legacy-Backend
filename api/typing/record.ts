@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express"
-import { CustomError } from "../structure/errorStructure"
+import { CustomError } from "../../types/errorStructure"
 import { pool } from "../index"
 import { TypingInfo } from "../../types/typing"
 import { ResultSetHeader } from "mysql2"
@@ -63,11 +63,7 @@ router.post(
         throw new Error("Record insertion failed")
       }
     } catch (error) {
-      const customError: CustomError = {
-        name: "RecordInsertionError",
-        message: "Failed to insert Record.",
-        status: 500,
-      }
+      const customError = new CustomError("Failed to insert Record.", 500)
       return next(customError)
     }
   }

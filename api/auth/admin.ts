@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express"
-import { CustomError } from "../structure/errorStructure"
+import { CustomError } from "../../types/errorStructure"
 import { pool } from "../index"
 
 const router = express.Router()
@@ -21,11 +21,7 @@ router.get(
         data: { requestList: request },
       })
     } catch (error) {
-      const customError: CustomError = {
-        name: "RequestRetrievalError",
-        message: "Failed to retrieve requests.",
-        status: 500,
-      }
+      const customError = new CustomError("Failed to retrieve requests.", 500)
       return next(customError)
     }
   }

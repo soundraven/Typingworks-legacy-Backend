@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express"
-import { CustomError } from "../structure/errorStructure"
+import { CustomError } from "../../types/errorStructure"
 import { pool } from "../index"
 import { RuleForm } from "../../types/typing"
 import { ResultSetHeader } from "mysql2"
@@ -50,21 +50,12 @@ router.post(
         ...values,
       ])
 
-      if (result.affectedRows === 1) {
-        const success: Boolean = true
-        return res.status(200).json({
-          message: "Successfully inserted form data.",
-          data: success,
-        })
-      } else {
-        throw new Error("Form insertion failed")
-      }
+      return res.status(200).json({
+        message: "Successfully inserted form data.",
+        data: { success: true },
+      })
     } catch (error) {
-      const customError: CustomError = {
-        name: "FormInsertionError",
-        message: "Failed to insert form data.",
-        status: 500,
-      }
+      const customError = new CustomError("Failed to insert form data.", 500)
       return next(customError)
     }
   }
