@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs"
+
 export interface RuleForm {
   requester: string
   language: string
@@ -21,4 +23,20 @@ export interface TypingInfo {
   count: number
   entireElapsedTime: number
   charCount: number
+}
+
+export interface Record {
+  registered_by: number
+  language: string
+  type: string
+  avg_wpm: number
+  avg_cpm: number
+  max_wpm: number
+  max_cpm: number
+  avg_accuracy: number
+  avg_progress: number
+  count: number
+  time: number
+  char_count: number
+  registered_date: Date
 }

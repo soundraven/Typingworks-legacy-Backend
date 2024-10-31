@@ -10,6 +10,8 @@ import getKakaoLoginRoute from "./auth/kakaoLogin"
 import autoLoginRoute from "./auth/me"
 import getRequestListRoute from "./auth/admin"
 import confirmRequestRoute from "./auth/confirm"
+import getRecentRecordRoute from "./chart/recentRecord"
+import getEntireRecordRoute from "./chart/entireRecord"
 import { errorHandlerMiddleware } from "./middlewares/errorHandlerMiddleware"
 
 dotenv.config()
@@ -45,6 +47,8 @@ const initApp = async () => {
     app.use("/api/auth/me", autoLoginRoute)
     app.use("/api/auth/admin", getRequestListRoute)
     app.use("/api/auth/confirm", confirmRequestRoute)
+    app.use("/api/chart/recentRecord", getRecentRecordRoute)
+    app.use("/api/chart/entireRecord", getEntireRecordRoute)
     app.use(errorHandlerMiddleware)
 
     app.listen(process.env.PORT || 8001, () => {

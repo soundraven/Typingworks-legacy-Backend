@@ -14,9 +14,11 @@ router.post(
     next: NextFunction
   ): Promise<Response | void> => {
     const typingInfo: TypingInfo = req.body.typingInfo
+    const userId: number = Number(req.body.userId)
 
     const insertTypingInfoQuery = `
     INSERT INTO record (
+      registered_by,
       language,
       type,
       avg_wpm,
@@ -28,10 +30,11 @@ router.post(
       count,
       time,
       char_count
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 `
 
     const values = [
+      userId,
       typingInfo.targetLanguage,
       typingInfo.targetSentenceType,
       typingInfo.avgWpm,
